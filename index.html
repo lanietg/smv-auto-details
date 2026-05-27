@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMV Auto Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+
+    /* ================================
+       RESET & BASE
+    ================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #1a2744;
+      --blue-accent: #b8d4e8;
+      --blue-light: #e8f2f8;
+      --black: #111111;
+      --white: #ffffff;
+      --gray: #f8f9fa;
+      --text-gray: #666666;
+      --shadow: 0 8px 32px rgba(26, 39, 68, 0.12);
+      --shadow-hover: 0 16px 48px rgba(26, 39, 68, 0.2);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ================================
+       LOADING ANIMATION
+    ================================ */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--blue-accent);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ================================
+       NAVIGATION
+    ================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+    }
+
+    .nav-logo img {
+      height: 48px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--blue-accent);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background-color: var(--navy);
+      transition: all 0.3s ease;
+      display: block;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 24px 32px;
+      box-shadow: var(--shadow);
+      z-index: 999;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      text-decoration: none;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--blue-light);
+    }
+
+    /* ================================
+       HERO SECTION
+    ================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: linear-gradient(180deg, var(--blue-light) 0%, var(--white) 60%);
+    }
+
+    .hero-logo {
+      width: 180px;
+      object-fit: contain;
+      margin-bottom: 32px;
+      filter: drop-shadow(0 4px 12px rgba(26,39,68,0.15));
+    }
+
+    .hero-divider {
+      width: 80px;
+      height: 3px;
+      background: var(--navy);
+      margin: 0 auto 32px;
+      border-radius: 2px;
+    }
+
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .hero-tagline {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--text-gray);
+      margin-bottom: 48px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .btn-book {
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 18px 56px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-book:hover {
+      background: #0d1a33;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* ================================
+       REVIEWS SECTION
+    ================================ */
+    .reviews {
+      padding: 80px 24px;
+      background: var(--white);
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-gray);
+      margin-bottom: 48px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .btn-review {
+      background: var(--blue-light);
+      color: var(--navy);
+      border: 2px solid var(--blue-accent);
+      padding: 16px 48px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 56px;
+      display: inline-block;
+    }
+
+    .btn-review:hover {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto 32px;
+    }
+
+    .review-card {
+      background: var(--gray);
+      border-radius: 20px;
+      padding: 28px;
+      text-align: left;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .review-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--navy);
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--text-gray);
+    }
+
+    .review-stars {
+      color: #f4c430;
+      font-size: 16px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .review-text {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .hidden-review {
+      display: none;
+    }
+
+    .btn-view-more {
+      background: var(--blue-light);
+      color: var(--navy);
+      border: 2px solid var(--blue-accent);
+      padding: 14px 40px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-view-more:hover {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+    }
+
+    /* ================================
+       WORK / GALLERY SECTION
+    ================================ */
+    .work {
+      padding: 80px 0;
+      background: var(--navy);
+      text-align: center;
+    }
+
+    .work .section-title {
+      color: white;
+      margin-bottom: 8px;
+      padding: 0 24px;
+    }
+
+    .work .section-subtitle {
+      color: var(--blue-accent);
+      margin-bottom: 48px;
+    }
+
+    .gallery-wrapper {
+      position: relative;
+      overflow: hidden;
+      padding: 0 48px;
+    }
+
+    .gallery-track {
+      display: flex;
+      gap: 20px;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-item {
+      min-width: 300px;
+      height: auto;
+      max-height: 500px;
+      border-radius: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: white;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+      z-index: 10;
+    }
+
+    .gallery-btn:hover {
+      background: var(--navy);
+      color: white;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .gallery-btn.prev { left: 0; }
+    .gallery-btn.next { right: 0; }
+
+    /* ================================
+       ABOUT SECTION
+    ================================ */
+    .about {
+      padding: 80px 24px;
+      background: var(--gray);
+      text-align: center;
+    }
+
+    .about-card {
+      background: white;
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: var(--shadow);
+    }
+
+    .about-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border: 4px solid var(--blue-accent);
+    }
+
+    .about h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .about p {
+      font-size: 15px;
+      color: var(--text-gray);
+      line-height: 1.9;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ================================
+       FOOTER
+    ================================ */
+    footer {
+      background: var(--navy);
+      padding: 48px 24px 32px;
+      text-align: center;
+      color: white;
+    }
+
+    .footer-logo img {
+      height: 56px;
+      object-fit: contain;
+      margin-bottom: 24px;
+      filter: brightness(10);
+    }
+
+    .footer-contact {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .footer-contact a {
+      color: var(--blue-accent);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .footer-contact a:hover {
+      color: white;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .social-links a:hover {
+      background: var(--blue-accent);
+      color: var(--navy);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 24px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    .footer-credit {
+      margin-top: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .footer-credit a {
+      color: var(--blue-accent);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .footer-credit a:hover {
+      opacity: 1;
+    }
+
+    /* ================================
+       SCROLL TO TOP BUTTON
+    ================================ */
+    #topBtn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 999;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #topBtn.visible {
+      opacity: 1;
+    }
+
+    #topBtn:hover {
+      background: #0d1a33;
+      transform: translateY(-3px);
+    }
+
+    /* ================================
+       MODALS
+    ================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+      animation: modalIn 0.3s ease;
+      position: relative;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-gray);
+      transition: color 0.3s;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--navy);
+    }
+
+    .modal h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      font-size: 14px;
+      color: var(--text-gray);
+      margin-bottom: 32px;
+    }
+
+    .book-options {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .book-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-radius: 16px;
+      border: 2px solid var(--blue-light);
+      text-decoration: none;
+      color: var(--navy);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      background: var(--gray);
+    }
+
+    .book-option:hover {
+      background: var(--navy);
+      color: white;
+      border-color: var(--navy);
+      transform: translateX(4px);
+    }
+
+    .book-option i {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Review form */
+    .review-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      padding: 14px 16px;
+      border: 2px solid var(--blue-light);
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--black);
+      transition: border-color 0.3s;
+      outline: none;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--navy);
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+
+    .star-rating input {
+      display: none;
+    }
+
+    .star-rating label {
+      font-size: 28px;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label {
+      color: #f4c430;
+    }
+
+    .btn-submit {
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: #0d1a33;
+      transform: translateY(-2px);
+    }
+
+    /* ================================
+       SCROLL FADE IN
+    ================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================================
+       RESPONSIVE — MOBILE
+    ================================ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .gallery-item {
+        min-width: 260px;
+        height: 200px;
+      }
+
+      .modal {
+        padding: 32px 24px;
+      }
+
+      .about-card {
+        padding: 32px 24px;
+      }
+
+      footer .footer-contact {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader">
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- SCROLL TO TOP -->
+  <button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <img src="smv.png" alt="SMV Auto Details">
+    </div>
+    <ul class="nav-links">
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#work">My Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#reviews" onclick="closeMobileMenu()">Reviews</a>
+    <a href="#work" onclick="closeMobileMenu()">My Work</a>
+    <a href="#about" onclick="closeMobileMenu()">About</a>
+    <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="smv.png" alt="SMV Auto Details" class="hero-logo">
+    <div class="hero-divider"></div>
+    <h1>Premium Mobile<br>Car Detailing</h1>
+    <p class="hero-tagline">We come to you · Professional results · Every time</p>
+    <button class="btn-book" onclick="openModal('bookModal')">Book Now</button>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="reviews fade-in" id="reviews">
+    <p class="section-title">Reviews</p>
+    <p class="section-subtitle">What our customers say</p>
+    <button class="btn-review" onclick="openModal('reviewModal')">
+      ✍️ Write a Review
+    </button>
+    <div class="reviews-grid" id="reviewsGrid">
+      <!-- Reviews load here via JavaScript -->
+    </div>
+    <button class="btn-view-more" id="viewMoreBtn" onclick="showMoreReviews()">
+      View More Reviews
+    </button>
+  </section>
+
+  <!-- WORK -->
+  <section class="work fade-in" id="work">
+    <p class="section-title">My Work</p>
+    <p class="section-subtitle">Before & After · Real Results</p>
+    <div class="gallery-wrapper">
+      <button class="gallery-btn prev" onclick="slideGallery(-1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="gallery-track" id="galleryTrack">
+        <div class="gallery-item"><img src="1.JPG" alt="Car Detail 1"></div>
+        <div class="gallery-item"><img src="2.JPG" alt="Car Detail 2"></div>
+        <div class="gallery-item"><img src="3.JPG" alt="Car Detail 3"></div>
+        <div class="gallery-item"><img src="4.JPG" alt="Car Detail 4"></div>
+        <div class="gallery-item"><img src="5.JPG" alt="Car Detail 5"></div>
+      </div>
+      <button class="gallery-btn next" onclick="slideGallery(1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about fade-in" id="about">
+    <p class="section-title">About Me</p>
+    <p class="section-subtitle">The person behind the shine</p>
+    <div class="about-card">
+      <div class="about-avatar">🚗</div>
+      <h2>Sean Vazquez</h2>
+      <p>
+        I am a young guy who owns a mobile car detailing service dedicated to bringing
+        showroom quality results directly to your driveway. With attention to detail
+        and passion, I make sure every vehicle I touch leaves
+        looking its absolute best. Your satisfaction is my standard.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-logo">
+      <img src="smv.png" alt="SMV Auto Details">
+    </div>
+    <div class="footer-contact">
+      <a href="tel:+17073098993">
+        <i class="fas fa-phone"></i> (707) 309-8993
+      </a>
+      <a href="mailto:smvazquez100@gmail.com">
+        <i class="fas fa-envelope"></i> smvazquez100@gmail.com
+      </a>
+    </div>
+    <div class="social-links">
+      <a href="https://www.instagram.com/smvautodetails?igsh=MThnb2cybXZ3ZGRrcw==" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.tiktok.com/@smvautodetails?_r=1&_t=ZP-96hJMiVKvct" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+</div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 SMV Auto Details · All Rights Reserved</p>
+      <p class="footer-credit">
+      Built by: <a href="mailto:melanie.troncosoga@gmail.com">melanie.troncosoga@gmail.com</a>
+    </p>
+    </div>
+  </footer>
+
+  <!-- BOOK NOW MODAL -->
+  <div class="modal-overlay" id="bookModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('bookModal')">×</button>
+      <h3>Book a Detail</h3>
+      <p>Choose how you'd like to get in touch</p>
+      <div class="book-options">
+        <a href="tel:+17073098993" class="book-option">
+          <i class="fas fa-phone"></i>
+          Via Phone — (707) 309-8993
+        </a>
+        <a href="mailto:smvazquez100@gmail.com" class="book-option">
+          <i class="fas fa-envelope"></i>
+          Via Email
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE A REVIEW MODAL -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('reviewModal')">×</button>
+      <h3>Write a Review</h3>
+      <p>Share your experience with SMV Auto Details</p>
+      <div class="review-form">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="reviewName" placeholder="John Smith">
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="star-rating">
+            <input type="radio" name="rating" id="star5" value="5">
+            <label for="star5">★</label>
+            <input type="radio" name="rating" id="star4" value="4">
+            <label for="star4">★</label>
+            <input type="radio" name="rating" id="star3" value="3">
+            <label for="star3">★</label>
+            <input type="radio" name="rating" id="star2" value="2">
+            <label for="star2">★</label>
+            <input type="radio" name="rating" id="star1" value="1">
+            <label for="star1">★</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Your Review</label>
+          <textarea id="reviewText" rows="4" placeholder="Tell others about your experience..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="submitReview()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyCo-tofPJt3wsce2F8ini2jvd7hDKpQsR0",
+    authDomain: "smv-auto-details.firebaseapp.com",
+    projectId: "smv-auto-details",
+    storageBucket: "smv-auto-details.firebasestorage.app",
+    messagingSenderId: "927061639866",
+    appId: "1:927061639866:web:eaa31a427fc4b85a1cf883"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+    // ================================
+    // LOADING SCREEN
+    // ================================
+    window.addEventListener('load', function() {
+      const loader = document.getElementById('loader');
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 500);
+    });
+
+    // ================================
+    // HAMBURGER MENU
+    // ================================
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', function() {
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('open');
+    });
+
+    function closeMobileMenu() {
+      hamburger.classList.remove('active');
+      mobileMenu.classList.remove('open');
+    }
+
+    // ================================
+    // MODALS
+    // ================================
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Close modal when clicking outside
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('open');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+    // Make functions global so HTML buttons can use them
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.closeMobileMenu = closeMobileMenu;
+    window.showMoreReviews = showMoreReviews;
+    window.submitReview = submitReview;
+    window.slideGallery = slideGallery;
+
+    // ================================
+    // REVIEWS SYSTEM
+    // ================================
+    let showingAll = false;
+    let allReviews = [];
+
+    async function loadReviews() {
+    const grid = document.getElementById('reviewsGrid');
+    grid.innerHTML = '<p style="color:#666;text-align:center">Loading reviews...</p>';
+    
+    try {
+      const q = query(collection(db, "reviews"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+      allReviews = [];
+      snapshot.forEach(doc => allReviews.push(doc.data()));
+      renderReviews();
+    } catch(e) {
+      grid.innerHTML = '<p style="color:#666;text-align:center">No reviews yet. Be the first!</p>';
+    }
+  }
+
+  function renderReviews() {
+    const grid = document.getElementById('reviewsGrid');
+    const viewMoreBtn = document.getElementById('viewMoreBtn');
+    grid.innerHTML = '';
+
+    if (allReviews.length === 0) {
+      grid.innerHTML = '<p style="color:#666;text-align:center;grid-column:1/-1">No reviews yet. Be the first!</p>';
+      viewMoreBtn.style.display = 'none';
+      return;
+    }
+
+    const toShow = showingAll ? allReviews : allReviews.slice(0, 3);
+
+    toShow.forEach(function(review) {
+      const stars = '★'.repeat(review.stars) + '☆'.repeat(5 - review.stars);
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <div class="review-header">
+          <span class="review-name">${review.name}</span>
+          <span class="review-date">Date: ${review.date}</span>
+        </div>
+        <div class="review-stars">${stars}</div>
+        <p class="review-text">${review.text}</p>
+      `;
+      grid.appendChild(card);
+    });
+
+    viewMoreBtn.style.display = allReviews.length <= 3 ? 'none' : 'inline-block';
+    viewMoreBtn.textContent = showingAll ? 'Show Less' : 'View More Reviews';
+  }
+
+  function showMoreReviews() {
+    showingAll = !showingAll;
+    renderReviews();
+  }
+
+  async function submitReview() {
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const rating = document.querySelector('input[name="rating"]:checked');
+
+    if (!name || !text || !rating) {
+      alert('Please fill in all fields and select a rating!');
+      return;
+    }
+
+    const today = new Date();
+    const date = `${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}/${today.getFullYear()}`;
+
+    try {
+      await addDoc(collection(db, "reviews"), {
+        name: name,
+        date: date,
+        stars: parseInt(rating.value),
+        text: text,
+        timestamp: today.getTime()
+      });
+
+      document.getElementById('reviewName').value = '';
+      document.getElementById('reviewText').value = '';
+      document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+
+      closeModal('reviewModal');
+      await loadReviews();
+      alert('¡Review submitted successfully!');
+    } catch(e) {
+      alert('Error submitting review. Please try again.');
+    }
+  }
+
+  loadReviews();
+
+    // ================================
+    // GALLERY SLIDER
+    // ================================
+    let galleryIndex = 0;
+
+    function slideGallery(direction) {
+      const track = document.getElementById('galleryTrack');
+      const items = track.querySelectorAll('.gallery-item');
+      const itemWidth = items[0].offsetWidth + 20;
+      const maxIndex = items.length - 1;
+
+      galleryIndex = Math.max(0, Math.min(galleryIndex + direction, maxIndex));
+      track.style.transform = `translateX(-${galleryIndex * itemWidth}px)`;
+    }
+
+    // ================================
+    // SCROLL TO TOP BUTTON
+    // ================================
+    window.addEventListener('scroll', function() {
+      const btn = document.getElementById('topBtn');
+      if (window.scrollY > 300) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    });
+
+    // ================================
+    // SCROLL FADE IN ANIMATIONS
+    // ================================
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(function(el) {
+      observer.observe(el);
+    });
+
+  </script>
+</body>
+</html>
