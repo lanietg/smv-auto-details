@@ -419,7 +419,8 @@
     .gallery-item img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center;
       transition: transform 0.4s ease;
     }
 
@@ -831,9 +832,13 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
 
+      .gallery-wrapper {
+        padding: 0 40px;
+      }
+
       .gallery-item {
-        min-width: 260px;
-        height: 200px;
+        min-width: calc(100vw - 96px);
+        height: 260px;
       }
 
       .modal {
@@ -943,10 +948,7 @@
       <div class="about-avatar">🚗</div>
       <h2>Sean Vazquez</h2>
       <p>
-        I am a young guy who owns a mobile car detailing service dedicated to bringing
-        showroom quality results directly to your driveway. With attention to detail
-        and passion, I make sure every vehicle I touch leaves
-        looking its absolute best. Your satisfaction is my standard.
+        I am a 16 year old entrepreneur building a mobile car detailing business with a strong focus on quality and cosistency. I take pride in delivering great results on every vehicle, inside and out. My goal is to leave every client fullt satisfied, providing a clean, refreshed car and a service experience they can trust and rely on every time.
       </p>
     </div>
   </section>
@@ -1204,12 +1206,28 @@
     function slideGallery(direction) {
       const track = document.getElementById('galleryTrack');
       const items = track.querySelectorAll('.gallery-item');
-      const itemWidth = items[0].offsetWidth + 20;
+      const gap = 20;
+      const itemWidth = items[0].getBoundingClientRect().width + gap;
       const maxIndex = items.length - 1;
 
       galleryIndex = Math.max(0, Math.min(galleryIndex + direction, maxIndex));
       track.style.transform = `translateX(-${galleryIndex * itemWidth}px)`;
     }
+
+    // Touch swipe for mobile
+    (function() {
+      const track = document.getElementById('galleryTrack');
+      let touchStartX = 0;
+
+      track.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+
+      track.addEventListener('touchend', function(e) {
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 40) slideGallery(diff > 0 ? 1 : -1);
+      }, { passive: true });
+    })();
 
     // ================================
     // SCROLL TO TOP BUTTON
